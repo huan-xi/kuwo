@@ -1,0 +1,68 @@
+package com.huanxi.music.music.kuwo;
+
+import com.huanxi.music.http.downloader.IDownloader;
+import com.huanxi.music.music.kuwo.vo.GetLinkVo;
+import com.huanxi.music.music.kuwo.vo.MusicInfo;
+import com.huanxi.music.nosql.LevelDbCache;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.ID3v24Tag;
+import com.mpatric.mp3agic.Mp3File;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import java.io.File;
+
+@Service
+@Log4j2
+public class MusicPiP {
+    @Resource
+    KuwoService kuwoService;
+    @Resource
+    IDownloader downloader;
+
+    @Value("${app.path}")
+    private String downloadPath;
+
+    @Resource
+    LevelDbCache levelDbCache;
+
+    public void save(MusicInfo musicInfo) {
+        String key = "finish_" + musicInfo.getName();
+        if (!StringUtils.isEmpty(levelDbCache.get(key))) {
+            log.info("已经下载:" + musicInfo.getName());
+            return;
+        }
+        //获取input
+        try {
+            GetLinkVo getLinkVo = kuwoService.getDownloadLink(musicInfo.getRid());
+            if (getLinkVo == null) {
+                return;
+            }
+            String folder = System.getProperty("java.io.tmpdir");
+            String tmpMp3 = folder + musicInfo.getName();
+            //下载到临时目录
+            downloader.downLoad(getLinkVo.getUrl(), tmpMp3, 10);
+            Mp3File mp3File = new Mp3File(tmpMp3);
+            ID3v2 v2 = new ID3v24Tag();
+            v2.setArtist(musicInfo.getArtist());
+            v2.setAlbum(musicInfo.getAlbum());
+            v2.setTitle(musicInfo.getName());
+            v2.setTrack(String.valueOf(musicInfo.getTrack()));
+            v2.setYear(musicInfo.getReleaseDate());
+            v2.setAlbumImage(downloader.downLoadBytes(musicInfo.getAlbumpic()), "image/jpg");
+            //下载图片
+            mp3File.setId3v2Tag(v2);
+            File path = new File(downloadPath + File.separator + musicInfo.getArtist());
+            if (!path.isDirectory()) {
+                path.mkdirs();
+            }
+            mp3File.save(path.getPath() + File.separator + musicInfo.getName() + ".mp3");
+            levelDbCache.set(key, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

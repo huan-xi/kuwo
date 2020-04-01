@@ -1,0 +1,6 @@
+cache:
+  leveldb:
+    path: data/db
+app:
+  gateway: http://www.kuwo.cn
+  path: data/music
