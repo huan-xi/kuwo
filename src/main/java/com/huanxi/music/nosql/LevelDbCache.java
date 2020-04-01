@@ -13,12 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 
-@Service
+//@Service
 public class LevelDbCache implements ICache {
 
     @Value("${cache.leveldb.path}")
     private String path;
-    private static DB db;
+    private DB db;
 
     @PostConstruct
     public void init() {
@@ -36,6 +36,10 @@ public class LevelDbCache implements ICache {
 
     public void put(String key, String value) {
         db.put(key.getBytes(), value.getBytes());
+    }
+
+    public  DB getDb() {
+        return this.db;
     }
 
     @Override

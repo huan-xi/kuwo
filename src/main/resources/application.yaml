@@ -4,3 +4,8 @@ cache:
 app:
   gateway: http://www.kuwo.cn
   path: data/music
+
+spring:
+  redis:
+    host: test.tb.xqcrm.com
+    port: 6380

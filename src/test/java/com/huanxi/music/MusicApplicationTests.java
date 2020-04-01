@@ -7,9 +7,8 @@ import com.huanxi.music.music.kuwo.MusicPiP;
 import com.huanxi.music.music.kuwo.Searcher;
 import com.huanxi.music.music.kuwo.vo.MusicInfo;
 import com.huanxi.music.music.kuwo.vo.ReturnMessage;
-import okhttp3.OkHttpClient;
+import com.huanxi.music.nosql.CacheImpl;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -29,6 +28,41 @@ class MusicApplicationTests {
 
     @Resource
     MusicPiP musicPiP;
+
+    @Resource
+    CacheImpl cache;
+
+
+    @Test
+    void testMo() {
+       /* DBIterator it = levelDbCache.getDb().iterator();
+        String prefix = "finish";
+        try {
+            for (it.seek(prefix.getBytes()); it.hasNext(); it.next()) {
+                if (!equalPrefix(it.peekNext().getKey(), prefix.getBytes()))
+                    break;
+                String key = new String(it.peekNext().getKey());
+                String value = new String(it.peekNext().getValue());
+                cache.set(key,value);
+                System.out.println(key+"="+value);
+            }
+        } finally {
+
+        }*/
+    }
+
+    public static boolean equalPrefix(byte[] src, byte[] target) {
+        if (src.length < target.length)
+            return false;
+
+        for (int i = 0; i < target.length; i++) {
+            if (src[i] != target[i])
+                return false;
+        }
+
+        return true;
+    }
+
     @Test
     void contextLoads() {
         Semaphore semaphore = new Semaphore(20);

@@ -3,7 +3,7 @@ package com.huanxi.music.music.kuwo;
 import com.huanxi.music.http.downloader.IDownloader;
 import com.huanxi.music.music.kuwo.vo.GetLinkVo;
 import com.huanxi.music.music.kuwo.vo.MusicInfo;
-import com.huanxi.music.nosql.LevelDbCache;
+import com.huanxi.music.nosql.ICache;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.Mp3File;
@@ -27,11 +27,11 @@ public class MusicPiP {
     private String downloadPath;
 
     @Resource
-    LevelDbCache levelDbCache;
+    ICache cache;
 
     public void save(MusicInfo musicInfo) {
         String key = "finish_" + musicInfo.getName();
-        if (!StringUtils.isEmpty(levelDbCache.get(key))) {
+        if (!StringUtils.isEmpty(cache.get(key))) {
             log.info("已经下载:" + musicInfo.getName());
             return;
         }
@@ -60,7 +60,7 @@ public class MusicPiP {
                 path.mkdirs();
             }
             mp3File.save(path.getPath() + File.separator + musicInfo.getName() + ".mp3");
-            levelDbCache.set(key, "ok");
+            cache.set(key, "ok");
         } catch (Exception e) {
             e.printStackTrace();
         }
