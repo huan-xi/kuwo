@@ -29,6 +29,13 @@ public class RequestBean {
                     private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
                     @Override
                     public void saveFromResponse(@NotNull HttpUrl httpUrl, @NotNull List<Cookie> list) {
+                        if (!CollectionUtils.isEmpty(list)) {
+                            for (Cookie cookie : list) {
+                                if (cookie.name().equals("kw_token")) {
+                                    cache.set("kwToken",cookie.value());
+                                }
+                            }
+                        }
                         cookieStore.put(httpUrl.host(), list);
                     }
 
@@ -36,13 +43,7 @@ public class RequestBean {
                     @Override
                     public List<Cookie> loadForRequest(@NotNull HttpUrl httpUrl) {
                         List<Cookie> cookies = cookieStore.get(httpUrl.host());
-                        if (!CollectionUtils.isEmpty(cookies)) {
-                            for (Cookie cookie : cookies) {
-                                if (cookie.name().equals("kw_token")) {
-                                    cache.set("kwToken",cookie.value());
-                                }
-                            }
-                        }
+
                         return cookies != null ? cookies : new ArrayList<Cookie>();
                     }
                 })
