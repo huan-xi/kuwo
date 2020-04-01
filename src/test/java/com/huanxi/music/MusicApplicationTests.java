@@ -38,24 +38,7 @@ class MusicApplicationTests {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            ReturnMessage res = searcher.search("周杰伦", i, 20);
-            if (res.getCode() == 200) {
-                for (MusicInfo musicInfo : res.getData().getList()) {
-                    //数据持久化 //
-                    try {
-                       executor.execute(new Runnable() {
-                           @Override
-                           public void run() {
-                               musicPiP.save(musicInfo);
-                               semaphore.release();
-                           }
-                       });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
-                }
-            }
 
         }
 
