@@ -3,6 +3,7 @@ package com.huanxi.music.music.kuwo;
 import com.alibaba.fastjson.JSON;
 import com.huanxi.music.http.request.OkHttp3Request;
 import com.huanxi.music.music.kuwo.vo.GetLinkVo;
+import com.huanxi.music.music.kuwo.vo.SearchKeyVo;
 import com.huanxi.music.nosql.ICache;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -23,17 +25,10 @@ public class KuwoService {
     ICache cache;
 
     public String getDownloadLinkCache(Long rid) {
-        String key = "music_link_" + rid;
-        String link = cache.get(key);
-        if (!StringUtils.isEmpty(link)) {
-            return link;
-        }
+        String link = null;
         GetLinkVo res = getDownloadLink(rid);
         if (res != null && res.getCode() == 200) {
             link = res.getUrl();
-            if (!StringUtils.isEmpty(link)) {
-                cache.set(key, link);
-            }
         }
         return link;
     }
@@ -51,5 +46,26 @@ public class KuwoService {
             res.close();
         }
         return a;
+    }
+
+    public SearchKeyVo getSearchKey(String key) {
+        String url = String.format("http://www.kuwo.cn/api/www/search/searchKey?key=%s&reqId=%s", key, UUID.randomUUID());
+        Response res = okHttp3Request.get(url);
+        SearchKeyVo vo = null;
+        String cacheKey = "search_key_" + key;
+        vo = (SearchKeyVo) cache.getObject(cacheKey, SearchKeyVo.class);
+        if (vo != null) {
+            return vo;
+        }
+        try {
+            String str = res.body().string();
+            if (!StringUtils.isEmpty(str)) {
+                vo = JSON.parseObject(str, SearchKeyVo.class);
+                cache.set(cacheKey, vo, Duration.ofDays(1));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return vo;
     }
 }

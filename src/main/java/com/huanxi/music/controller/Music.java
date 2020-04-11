@@ -7,6 +7,7 @@ import com.huanxi.music.music.kuwo.MusicPiP;
 import com.huanxi.music.music.kuwo.Searcher;
 import com.huanxi.music.music.kuwo.vo.MusicInfo;
 import com.huanxi.music.music.kuwo.vo.ReturnMessage;
+import com.huanxi.music.music.kuwo.vo.SearchKeyVo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +48,11 @@ public class Music {
         return OutputUtils.success(kuwoService.getDownloadLinkCache(rid));
     }
 
+    @GetMapping("searchKey")
+    public SearchKeyVo getSearchKey(String key) {
+        return kuwoService.getSearchKey(key);
+    }
+
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
         String filename = musicPiP.save(musicInfo);
@@ -71,7 +77,7 @@ public class Music {
             //设置响应头
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "attachment;filename=" + filename);
-            String sendName = new String((name+".mp3").getBytes("utf-8"), "iso-8859-1");
+            String sendName = new String((name + ".mp3").getBytes("utf-8"), "iso-8859-1");
             headers.setContentDispositionFormData("attachment", sendName);
             headers.setContentLength(body.length);
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

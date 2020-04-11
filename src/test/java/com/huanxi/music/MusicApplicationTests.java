@@ -27,7 +27,8 @@ class MusicApplicationTests {
 
     @Resource
     private ThreadPoolTaskExecutor executor;
-
+    @Resource
+    private KuwoService kuwoService;
     @Resource
     MusicPiP musicPiP;
 
@@ -38,7 +39,7 @@ class MusicApplicationTests {
 
     @Test
     void testMo() {
-       cache.set("test","test");
+        kuwoService.getSearchKey("");
     }
 
     @Test
