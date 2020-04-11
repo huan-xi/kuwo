@@ -29,17 +29,28 @@ public class MusicPiP {
     @Resource
     ICache cache;
 
-    public void save(MusicInfo musicInfo) {
-        String key = "finish_" + musicInfo.getName();
+    public String getFile(String artist,String name){
+        File path = new File(downloadPath + File.separator + artist);
+        String fileName = path.getPath() + File.separator + name + ".mp3";
+        return fileName;
+    }
+
+    public String save(MusicInfo musicInfo) {
+        String key = "finish_1_" + musicInfo.getName();
+        File path = new File(downloadPath + File.separator + musicInfo.getArtist());
+        String fileName = path.getPath() + File.separator + musicInfo.getName() + ".mp3";
+        if (!path.isDirectory()) {
+            path.mkdirs();
+        }
         if (!StringUtils.isEmpty(cache.get(key))) {
             log.info("已经下载:" + musicInfo.getName());
-            return;
+            return fileName;
         }
         //获取input
         try {
             GetLinkVo getLinkVo = kuwoService.getDownloadLink(musicInfo.getRid());
             if (getLinkVo == null) {
-                return;
+                return fileName;
             }
             String folder = System.getProperty("java.io.tmpdir");
             String tmpMp3 = folder + musicInfo.getName();
@@ -55,14 +66,11 @@ public class MusicPiP {
             v2.setAlbumImage(downloader.downLoadBytes(musicInfo.getAlbumpic()), "image/jpg");
             //下载图片
             mp3File.setId3v2Tag(v2);
-            File path = new File(downloadPath + File.separator + musicInfo.getArtist());
-            if (!path.isDirectory()) {
-                path.mkdirs();
-            }
-            mp3File.save(path.getPath() + File.separator + musicInfo.getName() + ".mp3");
+            mp3File.save(fileName);
             cache.set(key, "ok");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return fileName;
     }
 }

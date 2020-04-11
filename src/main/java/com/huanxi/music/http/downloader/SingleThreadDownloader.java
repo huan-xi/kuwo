@@ -17,6 +17,7 @@ public class SingleThreadDownloader implements IDownloader {
 
 
 
+    @Override
     public void downLoad(String url, String fileName, int retry) {
         downLoad(url, fileName);
     }
@@ -32,7 +33,6 @@ public class SingleThreadDownloader implements IDownloader {
 
     public void downLoad(String fileUrl, String filename) {
         try {
-
             URL url = new URL(fileUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");

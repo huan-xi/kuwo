@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 
@@ -24,8 +25,12 @@ public class CacheImpl implements ICache {
 
     @Override
     public Object getObject(String key, Class clazz) {
+        Object resObj = null;
         String res = get(key);
-        return JSON.parseObject(res, clazz);
+        if (!StringUtils.isEmpty(res)) {
+            resObj = JSON.parseObject(res, clazz);
+        }
+        return resObj;
     }
 
     @Override

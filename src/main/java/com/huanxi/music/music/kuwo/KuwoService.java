@@ -3,9 +3,11 @@ package com.huanxi.music.music.kuwo;
 import com.alibaba.fastjson.JSON;
 import com.huanxi.music.http.request.OkHttp3Request;
 import com.huanxi.music.music.kuwo.vo.GetLinkVo;
+import com.huanxi.music.nosql.ICache;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -17,6 +19,24 @@ public class KuwoService {
     private String gateway;
     @Resource
     OkHttp3Request okHttp3Request;
+    @Resource
+    ICache cache;
+
+    public String getDownloadLinkCache(Long rid) {
+        String key = "music_link_" + rid;
+        String link = cache.get(key);
+        if (!StringUtils.isEmpty(link)) {
+            return link;
+        }
+        GetLinkVo res = getDownloadLink(rid);
+        if (res != null && res.getCode() == 200) {
+            link = res.getUrl();
+            if (!StringUtils.isEmpty(link)) {
+                cache.set(key, link);
+            }
+        }
+        return link;
+    }
 
     //获取下载链接
     public GetLinkVo getDownloadLink(Long rid) {

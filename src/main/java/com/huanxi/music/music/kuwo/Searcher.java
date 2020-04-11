@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.huanxi.music.http.request.OkHttp3Request;
 import com.huanxi.music.music.kuwo.vo.ReturnMessage;
 import com.huanxi.music.music.kuwo.vo.SearchResultVo;
+import com.huanxi.music.nosql.ICache;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -23,23 +25,31 @@ public class Searcher {
     private OkHttp3Request okHttp3Request;
     @Value("${app.gateway}")
     private String gateway;
+    @Resource
+    ICache cache;
 
     //http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=%E5%91%A8%E6%9D%B0%E4%BC%A6&pn=1&rn=30&reqId=ebb74000-734e-11ea-ac7b-1b0664ec89bc
     public ReturnMessage search(String key) {
         return search(key, 1, 30);
     }
 
-    public ReturnMessage search(String key, int PageNo, int pageSize) {
-        String url = String.format(gateway + "/api/www/search/searchMusicBykeyWord?key=%s&pn=%d&rn=%d&reqId=%s", key, PageNo, pageSize, UUID.randomUUID());
+    public ReturnMessage search(String key, int pageNo, int pageSize) {
+        String cacheKey = "music_list_" + key +"pageNo_"+ pageNo + pageSize;
+        ReturnMessage returnMessage = (ReturnMessage) cache.getObject(cacheKey, ReturnMessage.class);
+        if (returnMessage != null) {
+            return returnMessage;
+        }
+        String url = String.format(gateway + "/api/www/search/searchMusicBykeyWord?key=%s&pn=%d&rn=%d&reqId=%s", key, pageNo, pageSize, UUID.randomUUID());
         Response res = okHttp3Request.get(url);
-        ReturnMessage returnMessage = null;
+
         try {
             String str = res.body().string();
             System.out.println(str);
             returnMessage = JSON.parseObject(str, ReturnMessage.class);
+            cache.set(cacheKey, str);
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             res.close();
         }
         return returnMessage;

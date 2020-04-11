@@ -1,6 +1,7 @@
 package com.huanxi.music.music.kuwo.vo;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 public class MusicInfo {
