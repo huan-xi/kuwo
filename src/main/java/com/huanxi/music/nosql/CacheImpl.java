@@ -26,7 +26,12 @@ public class CacheImpl implements ICache {
         Object resObj = null;
         String res = get(key);
         if (!StringUtils.isEmpty(res)) {
-            resObj = JSON.parseObject(res, clazz);
+            try {
+                resObj = JSON.parseObject(res, clazz);
+            } catch (Exception e) {
+                return null;
+            }
+
         }
         return resObj;
     }

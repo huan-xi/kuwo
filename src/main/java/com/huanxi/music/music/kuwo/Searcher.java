@@ -37,7 +37,7 @@ public class Searcher {
     public ReturnMessage search(String key, int pageNo, int pageSize) {
         String cacheKey = "music_list_" + key + "pageNo_" + pageNo + pageSize;
         ReturnMessage returnMessage = (ReturnMessage) cache.getObject(cacheKey, ReturnMessage.class);
-        if (returnMessage != null) {
+        if (returnMessage != null && returnMessage.getReqId() != null) {
             return returnMessage;
         }
         String url = String.format(gateway + "/api/www/search/searchMusicBykeyWord?key=%s&pn=%d&rn=%d&reqId=%s", key, pageNo, pageSize, UUID.randomUUID());
@@ -45,9 +45,11 @@ public class Searcher {
 
         try {
             String str = res.body().string();
-            System.out.println(str);
+
             returnMessage = JSON.parseObject(str, ReturnMessage.class);
-            cache.set(cacheKey, str, Duration.ofDays(1));
+            if (returnMessage.getReqId() != null) {
+                cache.set(cacheKey, str, Duration.ofDays(1));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

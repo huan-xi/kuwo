@@ -58,14 +58,17 @@ public class KuwoService {
         SearchKeyVo vo = null;
         String cacheKey = "search_key_" + key;
         vo = (SearchKeyVo) cache.getObject(cacheKey, SearchKeyVo.class);
-        if (vo != null) {
+        if (vo != null&&vo.getReqId()!=null) {
             return vo;
         }
         try {
             String str = res.body().string();
             if (!StringUtils.isEmpty(str)) {
                 vo = JSON.parseObject(str, SearchKeyVo.class);
-                cache.set(cacheKey, vo, Duration.ofDays(1));
+                if (vo.getReqId() != null) {
+                    cache.set(cacheKey, vo, Duration.ofHours(1));
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
