@@ -39,7 +39,7 @@ class MusicApplicationTests {
 
     @Test
     void testMo() {
-        kuwoService.getSearchKey("");
+        kuwoService.getSearchKey("后来遇a");
     }
 
     @Test

@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -49,6 +50,9 @@ public class KuwoService {
     }
 
     public SearchKeyVo getSearchKey(String key) {
+        if (key == null) {
+            key = "";
+        }
         String url = String.format("http://www.kuwo.cn/api/www/search/searchKey?key=%s&reqId=%s", key, UUID.randomUUID());
         Response res = okHttp3Request.get(url);
         SearchKeyVo vo = null;
