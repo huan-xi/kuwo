@@ -45,10 +45,17 @@ public class Searcher {
 
         try {
             String str = res.body().string();
+            try {
+                returnMessage = JSON.parseObject(str, ReturnMessage.class);
 
-            returnMessage = JSON.parseObject(str, ReturnMessage.class);
+            } catch (Exception e) {
+                log.error("search res:" + str);
+            }
+
             if (returnMessage.getReqId() != null) {
                 cache.set(cacheKey, str, Duration.ofDays(1));
+            } else {
+                log.error("search res:" + str);
             }
         } catch (IOException e) {
             e.printStackTrace();

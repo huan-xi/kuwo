@@ -32,7 +32,7 @@ class MusicApplicationTests {
     public void test(){
         Map<String, String> link = new HashMap<>();
         link.put("https://www.baidu.com", "百度");
-        link.put("http://www.tuiguangpingtai.com", "推广平台");
+//        link.put("http://www.tuiguangpingtai.com", "推广平台");
         redisTemplate.delete("link");
         redisTemplate.opsForHash().putAll("link",link);
     }
