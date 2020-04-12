@@ -15,8 +15,6 @@ public class CacheImpl implements ICache {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisObject;
 
     @Override
     public String get(String key) {

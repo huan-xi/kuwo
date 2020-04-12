@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.UUID;
 
 /**
@@ -34,7 +35,7 @@ public class Searcher {
     }
 
     public ReturnMessage search(String key, int pageNo, int pageSize) {
-        String cacheKey = "music_list_" + key +"pageNo_"+ pageNo + pageSize;
+        String cacheKey = "music_list_" + key + "pageNo_" + pageNo + pageSize;
         ReturnMessage returnMessage = (ReturnMessage) cache.getObject(cacheKey, ReturnMessage.class);
         if (returnMessage != null) {
             return returnMessage;
@@ -46,7 +47,7 @@ public class Searcher {
             String str = res.body().string();
             System.out.println(str);
             returnMessage = JSON.parseObject(str, ReturnMessage.class);
-            cache.set(cacheKey, str);
+            cache.set(cacheKey, str, Duration.ofDays(1));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
