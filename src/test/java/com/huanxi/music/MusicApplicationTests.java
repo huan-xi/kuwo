@@ -31,10 +31,9 @@ class MusicApplicationTests {
     @Test
     public void test(){
         Map<String, String> link = new HashMap<>();
-        link.put("https/www.baidu.com", "百度");
+        link.put("https://www.baidu.com", "百度");
+        link.put("http://www.tuiguangpingtai.com", "推广平台");
+        redisTemplate.delete("link");
         redisTemplate.opsForHash().putAll("link",link);
-        Map<Object, Object> a = redisTemplate.opsForHash().entries("link");
-        System.out.println(a.get("https/www.baidu.com"));;
-
     }
 }

@@ -29,10 +29,11 @@ public class Info {
     public AbstractMessage getHomeInfo() {
         Map<String, Object> info = new HashMap<>();
         Map<Object, Object> link = redisTemplate.opsForHash().entries("link");
-        Map<String, String> linko = new HashMap<>();
+
         List<Map<String, String>> links = new ArrayList<>();
         if (link.size()>0) {
             for (Map.Entry<Object, Object> entry : link.entrySet()) {
+                Map<String, String> linko = new HashMap<>();
                 linko.put("link", (String) entry.getKey());
                 linko.put("name", (String) entry.getValue());
                 links.add(linko);
