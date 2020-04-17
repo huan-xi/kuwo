@@ -28,6 +28,8 @@ public class Searcher {
     private String gateway;
     @Resource
     ICache cache;
+    @Resource
+    Parser parser;
 
     //http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=%E5%91%A8%E6%9D%B0%E4%BC%A6&pn=1&rn=30&reqId=ebb74000-734e-11ea-ac7b-1b0664ec89bc
     public ReturnMessage search(String key) {
@@ -42,17 +44,21 @@ public class Searcher {
         }
         String url = String.format(gateway + "/api/www/search/searchMusicBykeyWord?key=%s&pn=%d&rn=%d&reqId=%s", key, pageNo, pageSize, UUID.randomUUID());
         Response res = okHttp3Request.get(url);
-
         try {
             String str = res.body().string();
             try {
                 returnMessage = JSON.parseObject(str, ReturnMessage.class);
 
             } catch (Exception e) {
+                try {
+                    parser.fixed();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 log.error("search res:" + str);
             }
 
-            if (returnMessage.getReqId() != null) {
+            if (returnMessage!=null&&returnMessage.getReqId() != null) {
                 cache.set(cacheKey, str, Duration.ofDays(1));
             } else {
                 log.error("search res:" + str);

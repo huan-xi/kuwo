@@ -37,6 +37,8 @@ public class MusicPiP {
 
     public String save(MusicInfo musicInfo) {
         String key = "finish_1_" + musicInfo.getName();
+        String key2 = key + musicInfo.getArtist();
+
         File path = new File(downloadPath + File.separator + musicInfo.getArtist());
         String fileName = path.getPath() + File.separator + musicInfo.getName() + ".mp3";
         if (!path.isDirectory()) {
@@ -68,6 +70,7 @@ public class MusicPiP {
             mp3File.setId3v2Tag(v2);
             mp3File.save(fileName);
             cache.set(key, "ok");
+            cache.set(key2, "ok");
         } catch (Exception e) {
             e.printStackTrace();
         }
