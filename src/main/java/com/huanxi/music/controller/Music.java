@@ -67,8 +67,12 @@ public class Music {
 
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
+        //下载记录
+        log.info("下载记录:"+musicInfo.getArtist()+"name:"+musicInfo.getName());
+        String key2 = "music_finish" + "a" + musicInfo.getArtist() + "n" + musicInfo.getName();
+        String key = "finish_1_" + musicInfo.getName();
+
         String filename = musicPiP.save(musicInfo);
-//        String filename = "/Users/huangjiawei/IdeaProjects/music/data/music/周杰伦/告白气球.mp3";
 
         File file = new File(filename);
         if (file.isFile()) {
@@ -77,22 +81,18 @@ public class Music {
             //获取onedrive链接
             String requestUrl = String.format("https://round-mud-838c.huanxi.workers.dev/%s/%s.mp3", musicInfo.getArtist(), musicInfo.getName());
             String url = null;
-		log.info(requestUrl);
             try {
                 url = NetUtils.getRedirectUrl(requestUrl);
-		log.info(url);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             if (!StringUtils.isEmpty(url)) {
                 log.info("使用onedrive连接:" + musicInfo.getName());
+                cache.set(key2, "1");
                 return OutputUtils.success(url);
-            } else {
-                String key = "finish_1_" + musicInfo.getName();
-                cache.delete(key);
-                //位置原因
-                log.error("下载失败:" + musicInfo.getArtist() + "," + musicInfo.getName());
             }
+            //位置原因
+            log.error("下载失败:" + musicInfo.getArtist() + "," + musicInfo.getName());
         }
         return OutputUtils.error();
     }

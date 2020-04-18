@@ -29,7 +29,7 @@ public class MusicPiP {
     @Resource
     ICache cache;
 
-    public String getFile(String artist,String name){
+    public String getFile(String artist, String name) {
         File path = new File(downloadPath + File.separator + artist);
         String fileName = path.getPath() + File.separator + name + ".mp3";
         return fileName;
@@ -37,8 +37,7 @@ public class MusicPiP {
 
     public String save(MusicInfo musicInfo) {
         String key = "finish_1_" + musicInfo.getName();
-        String key2 = key + musicInfo.getArtist();
-
+        String key2 = "music_finish" + "a" + musicInfo.getArtist() + "n" + musicInfo.getName();
         File path = new File(downloadPath + File.separator + musicInfo.getArtist());
         String fileName = path.getPath() + File.separator + musicInfo.getName() + ".mp3";
         if (!path.isDirectory()) {
@@ -46,8 +45,13 @@ public class MusicPiP {
         }
         if (!StringUtils.isEmpty(cache.get(key))) {
             log.info("已经下载:" + musicInfo.getName());
+            cache.set(key2, "1");
+            return fileName;
+        } else if (!StringUtils.isEmpty(cache.get(key2))) {
+            log.info("已经下载:" + musicInfo.getName());
             return fileName;
         }
+
         //获取input
         try {
             GetLinkVo getLinkVo = kuwoService.getDownloadLink(musicInfo.getRid());
@@ -70,7 +74,7 @@ public class MusicPiP {
             mp3File.setId3v2Tag(v2);
             mp3File.save(fileName);
             cache.set(key, "ok");
-            cache.set(key2, "ok");
+            cache.set(key2, "1");
         } catch (Exception e) {
             e.printStackTrace();
         }
