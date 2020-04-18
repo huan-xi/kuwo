@@ -48,20 +48,14 @@ public class Searcher {
             String str = res.body().string();
             try {
                 returnMessage = JSON.parseObject(str, ReturnMessage.class);
-
             } catch (Exception e) {
-                try {
-                    parser.fixed();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                log.error("search res:" + str);
+                okHttp3Request.index();
             }
 
             if (returnMessage!=null&&returnMessage.getReqId() != null) {
                 cache.set(cacheKey, str, Duration.ofDays(1));
             } else {
-                log.error("search res:" + str);
+                okHttp3Request.index();
             }
         } catch (IOException e) {
             e.printStackTrace();

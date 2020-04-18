@@ -59,11 +59,7 @@ public class KuwoService {
         try {
             a = JSON.parseObject(res.body().string(), GetLinkVo.class);
         } catch (IOException e) {
-            try {
-                parser.fixed();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+            okHttp3Request.index();
         } finally {
             res.close();
         }
@@ -88,11 +84,7 @@ public class KuwoService {
                 try {
                     vo = JSON.parseObject(str, SearchKeyVo.class);
                 } catch (Exception e) {
-                    try {
-                        parser.fixed();
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+                    okHttp3Request.index();
                 }
 
                 if (vo != null && vo.getReqId() != null) {

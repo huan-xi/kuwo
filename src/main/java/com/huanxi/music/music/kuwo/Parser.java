@@ -31,13 +31,6 @@ public class Parser {
 
     @Scheduled(fixedRate = 1000 * 60 * 10)
     public void fixed() throws InterruptedException {
-        Response res = okHttp3Request.get("http://www.kuwo.cn");
-        if (res != null) {
-            res.close();
-        } else {
-            Thread.sleep(2000);
-            this.fixed();
-        }
+        okHttp3Request.index();
     }
-
 }
