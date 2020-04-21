@@ -43,7 +43,7 @@ class MusicApplicationTests {
     OkHttp3Request request;
 
     @Test
-    public void tests(){
+    public void tests() {
         String key = "finish_1_红豆";
         cache.set(key, "ok");
     }
@@ -51,18 +51,18 @@ class MusicApplicationTests {
     @Test
     public void testRequest() throws Exception {
         //System.out.println("test:"+NetUtils.getRedirectUrl("https://round-mud-838c.huanxi.workers.dev/test.txt"));
-                HttpURLConnection conn = (HttpURLConnection) new URL("http://round-mud-838c.huanxi.workers.dev/test.txt")
+        HttpURLConnection conn = (HttpURLConnection) new URL("http://round-mud-838c.huanxi.workers.dev/可泽&夏凌兮/起风了.mp3")
                 .openConnection();
         conn.setInstanceFollowRedirects(false);
         conn.setConnectTimeout(5000);
-	conn.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
-        conn.getHeaderFields().forEach((k,v)->{
-            System.out.println("k:"+k+"v:"+v);
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
+        conn.getHeaderFields().forEach((k, v) -> {
+            System.out.println("k:" + k + "v:" + v);
         });
     }
 
     @Test
-    public void test(){
+    public void test() {
         Map<String, String> link = new HashMap<>();
         link.put("https://www.my404.cn", "木尤小站");
         link.put("http://ebook.chengfeng8.top/", "免费小说");
@@ -77,12 +77,14 @@ class MusicApplicationTests {
         link.put("http://vip.dytt666.net", "免费优酷vip视频");
         link.put("https://huan-xi.gitee.io", "huanxi'blog");
         redisTemplate.delete("link");
-        redisTemplate.opsForHash().putAll("link",link);
+        redisTemplate.opsForHash().putAll("link", link);
+//        redisTemplate.expire("link");
     }
 
     @Test
-    public void testMv(){
-        System.out.println(kuwoService.getMvLink(78712269L));;
+    public void testMv() {
+        System.out.println(kuwoService.getMvLink(78712269L));
+        ;
 
     }
 }

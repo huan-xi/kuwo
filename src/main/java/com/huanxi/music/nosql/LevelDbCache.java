@@ -70,6 +70,11 @@ public class LevelDbCache implements ICache {
     }
 
     @Override
+    public void set(String key, String value, Duration duration) {
+
+    }
+
+    @Override
     public void delete(String key) {
 
     }

@@ -47,6 +47,11 @@ public class CacheImpl implements ICache {
     }
 
     @Override
+    public void set(String key, String value, Duration duration) {
+        redisTemplate.opsForValue().set(key, value, duration);
+    }
+
+    @Override
     public void delete(String key) {
         redisTemplate.delete(key);
     }

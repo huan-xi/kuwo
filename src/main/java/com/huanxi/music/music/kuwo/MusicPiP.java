@@ -35,6 +35,39 @@ public class MusicPiP {
         return fileName;
     }
 
+    public String download(MusicInfo musicInfo) {
+        File path = new File(downloadPath + File.separator + musicInfo.getArtist());
+        String fileName = path.getPath() + File.separator + musicInfo.getName() + ".mp3";
+        if (!path.isDirectory()) {
+            path.mkdirs();
+        }
+        //获取input
+        try {
+            GetLinkVo getLinkVo = kuwoService.getDownloadLink(musicInfo.getRid());
+            if (getLinkVo == null) {
+                return fileName;
+            }
+            String folder = System.getProperty("java.io.tmpdir");
+            String tmpMp3 = folder + musicInfo.getName();
+            //下载到临时目录
+            downloader.downLoad(getLinkVo.getUrl(), tmpMp3, 10);
+            Mp3File mp3File = new Mp3File(tmpMp3);
+            ID3v2 v2 = new ID3v24Tag();
+            v2.setArtist(musicInfo.getArtist());
+            v2.setAlbum(musicInfo.getAlbum());
+            v2.setTitle(musicInfo.getName());
+            v2.setTrack(String.valueOf(musicInfo.getTrack()));
+            v2.setYear(musicInfo.getReleaseDate());
+            v2.setAlbumImage(downloader.downLoadBytes(musicInfo.getAlbumpic()), "image/jpg");
+            //下载图片
+            mp3File.setId3v2Tag(v2);
+            mp3File.save(fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName;
+    }
+
     public String save(MusicInfo musicInfo) {
         String key = "finish_1_" + musicInfo.getName();
         String key2 = "music_finish" + "a" + musicInfo.getArtist() + "n" + musicInfo.getName();

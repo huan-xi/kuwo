@@ -10,6 +10,7 @@ import com.huanxi.music.music.kuwo.vo.MusicInfo;
 import com.huanxi.music.music.kuwo.vo.ReturnMessage;
 import com.huanxi.music.music.kuwo.vo.SearchKeyVo;
 import com.huanxi.music.nosql.ICache;
+import com.huanxi.music.onedrive.OneDriveService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,8 @@ public class Music {
     @Resource
     private Searcher searcher;
     @Resource
+    OneDriveService oneDriveService;
+    @Resource
     private KuwoService kuwoService;
 
 
@@ -67,31 +70,21 @@ public class Music {
 
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
+        //获取onedrive
+        String downloadUrl = oneDriveService.getDownLoadLink("/" + musicInfo.getArtist() + "/" + musicInfo.getName() + ".mp3");
+        if (!StringUtils.isEmpty(downloadUrl)) {
+            log.info("使用onedrive连接:" + musicInfo.getName());
+            return OutputUtils.success(downloadUrl);
+        }
         //下载记录
-        log.info("下载记录:"+musicInfo.getArtist()+"name:"+musicInfo.getName());
-        String key2 = "music_finish" + "a" + musicInfo.getArtist() + "n" + musicInfo.getName();
-        String key = "finish_1_" + musicInfo.getName();
+        log.info("下载记录:" + musicInfo.getArtist() + "name:" + musicInfo.getName());
 
-        String filename = musicPiP.save(musicInfo);
-
+        String filename = musicPiP.download(musicInfo);
         File file = new File(filename);
         if (file.isFile()) {
             return OutputUtils.success();
         } else {
-            //获取onedrive链接
-            String requestUrl = String.format("https://round-mud-838c.huanxi.workers.dev/%s/%s.mp3", musicInfo.getArtist(), musicInfo.getName());
-            String url = null;
-            try {
-                url = NetUtils.getRedirectUrl(requestUrl);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (!StringUtils.isEmpty(url)) {
-                log.info("使用onedrive连接:" + musicInfo.getName());
-                cache.set(key2, "1");
-                return OutputUtils.success(url);
-            }
-            //位置原因
+            //未知原因
             log.error("下载失败:" + musicInfo.getArtist() + "," + musicInfo.getName());
         }
         return OutputUtils.error();
