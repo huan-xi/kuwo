@@ -41,6 +41,9 @@ public class MusicPiP {
         if (!path.isDirectory()) {
             path.mkdirs();
         }
+        if (new File(fileName).isFile()) {
+            return fileName;
+        }
         //获取input
         try {
             GetLinkVo getLinkVo = kuwoService.getDownloadLink(musicInfo.getRid());
@@ -62,6 +65,7 @@ public class MusicPiP {
             //下载图片
             mp3File.setId3v2Tag(v2);
             mp3File.save(fileName);
+            new File(tmpMp3).delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
