@@ -71,13 +71,13 @@ public class Music {
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
         //获取onedrive
-        String downloadUrl = oneDriveService.getDownLoadLink("/" + musicInfo.getArtist() + "/" + musicInfo.getName() + ".mp3");
+        /*String downloadUrl = oneDriveService.getDownLoadLink("/" + musicInfo.getArtist() + "/" + musicInfo.getName() + ".mp3");
         if (!StringUtils.isEmpty(downloadUrl)) {
             log.info("使用onedrive连接:" + musicInfo.getName());
             return OutputUtils.success(downloadUrl);
         }
         //下载记录
-        log.info("下载记录:" + musicInfo.getArtist() + "name:" + musicInfo.getName());
+        log.info("下载记录:" + musicInfo.getArtist() + "name:" + musicInfo.getName());*/
 
         String filename = musicPiP.download(musicInfo);
         File file = new File(filename);

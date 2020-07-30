@@ -111,9 +111,9 @@ public class OneDriveService {
         return null;
     }
 
-    @Scheduled(fixedRate = 3000 * 1000)
+  /*  @Scheduled(fixedRate = 3000 * 1000)
     public void fixed() throws InterruptedException {
         log.info("刷新onedrive token");
         getToken();
-    }
+    }*/
 }
