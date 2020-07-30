@@ -1,9 +1,9 @@
 cache:
   leveldb:
-    path: data/db
+    path: /data/db
 app:
   gateway: http://www.kuwo.cn
-  path: data/music
+  path: /data/music
 spring:
   redis:
     host: 127.0.0.1
