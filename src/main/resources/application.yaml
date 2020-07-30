@@ -6,7 +6,8 @@ app:
   path: /data/music
 spring:
   redis:
-    host: 127.0.0.1
     port: 6379
+    host: test.tb.xqcrm.com
+    password: test_redis_pa
 server:
   port: 8008

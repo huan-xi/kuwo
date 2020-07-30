@@ -24,10 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLDecoder;
 
 @RestController
 @Log4j2
@@ -91,7 +89,11 @@ public class Music {
     }
 
     @GetMapping("download")
-    public ResponseEntity<byte[]> download(HttpServletRequest request, String artist, String name) {
+    public ResponseEntity<byte[]> download(HttpServletRequest request, String artist, String name) throws UnsupportedEncodingException {
+        //artist 处理
+        String text = request.getQueryString();
+        artist = getSubString(text, "artist=", "&name");
+        artist=URLDecoder.decode(artist, "UTF-8");
         String filename = musicPiP.getFile(artist, name);
         InputStream in = null;
         byte[] body = null;
@@ -123,6 +125,36 @@ public class Music {
 
         return response;
     }
+
+    /**
+     * 取两个文本之间的文本值
+     *
+     * @param text  源文本 比如：欲取全文本为 12345
+     * @param left  文本前面
+     * @param right 后面文本
+     * @return 返回 String
+     */
+    public static String getSubString(String text, String left, String right) {
+        String result = "";
+        int zLen;
+        if (left == null || left.isEmpty()) {
+            zLen = 0;
+        } else {
+            zLen = text.indexOf(left);
+            if (zLen > -1) {
+                zLen += left.length();
+            } else {
+                zLen = 0;
+            }
+        }
+        int yLen = text.indexOf(right, zLen);
+        if (yLen < 0 || right == null || right.isEmpty()) {
+            yLen = text.length();
+        }
+        result = text.substring(zLen, yLen);
+        return result;
+    }
+
 
     public ReturnMessage downloadList(String key, int pageNo, int pageSize) {
         ReturnMessage res = searcher.search(key, pageNo, pageSize);
