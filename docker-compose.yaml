@@ -1,0 +1,28 @@
+version: '3'
+services:
+  music:
+    restart: always
+    image: openjdk:8-jdk-alpine
+    environment:
+      active: release
+      datasourceUrl: jdbc:mysql://172.18.0.1:3306/seller_assistant?characterEncoding=utf8&serverTimezone=GMT%2B8
+      redisHost: 172.18.0.1
+      redisPasswd: redis_passwd
+    volumes:
+      - /root/.m2/repository/com/huanxi/music/0.0.1-SNAPSHOT/music-0.0.1-SNAPSHOT.jar:/opt/app.jar
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+      - /mnt/log:/mnt/log
+    command: [
+      'java',
+      '-Xmx500m',
+      '-jar',
+      '/opt/app.jar'
+    ]
+    networks:
+      default:
+        ipv4_address: 172.18.0.12
+networks:
+  default:
+    external:
+      name: mynetwork

@@ -71,7 +71,7 @@ class MusicApplicationTests {
         link.put("https://mamu.xls0514.top/", "Mc麻木音乐网");
         link.put("http://wlmqlww.xj917.com", "乌鲁木齐论文网");
         link.put("http://www.ifreetube.com", "免费商用音乐");
-        link.put("https://www.iwangl.com", "爱网络导航");
+        link.put("http://www.iwangl.com", "爱网络导航");
         link.put("http://www.0558.la/", "自动秒收录");
         link.put("https://www.zdslc.com/", "站点收录池");
         link.put("http://vip.dytt666.net", "免费优酷vip视频");
