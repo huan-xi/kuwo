@@ -7,7 +7,7 @@ app:
 spring:
   redis:
     port: 6379
-    host: ${redisHost:test.tb.xqcrm.com}
-    password: ${redisPasswd:test_redis_pa}
+    host: ${redisHost:local.tb.xqcrm.com}
+#    password: ${redisPasswd:test_redis_pa}
 server:
   port: 8008

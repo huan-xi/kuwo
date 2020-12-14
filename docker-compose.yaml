@@ -6,13 +6,14 @@ services:
     environment:
       active: release
       datasourceUrl: jdbc:mysql://172.18.0.1:3306/seller_assistant?characterEncoding=utf8&serverTimezone=GMT%2B8
-      redisHost: 172.18.0.1
-      redisPasswd: redis_passwd
+      redisHost: local.tb.xqcrm.com
+#      redisPasswd: ""
     volumes:
       - /root/.m2/repository/com/huanxi/music/0.0.1-SNAPSHOT/music-0.0.1-SNAPSHOT.jar:/opt/app.jar
       - /etc/localtime:/etc/localtime
       - /etc/timezone:/etc/timezone
       - /mnt/log:/mnt/log
+      - /home/data:/data
     command: [
       'java',
       '-Xmx500m',
