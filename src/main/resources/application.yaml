@@ -4,7 +4,12 @@ cache:
 app:
   gateway: http://www.kuwo.cn
   path: /data/music
+logging:
+  file:
+    path: ~/tmp/log
 spring:
+  profiles:
+    active: ${active:dev}
   redis:
     port: 6379
     host: ${redisHost:local.tb.xqcrm.com}

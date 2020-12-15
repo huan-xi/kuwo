@@ -37,7 +37,7 @@ public class Searcher {
     }
 
     public ReturnMessage search(String key, int pageNo, int pageSize) {
-        String cacheKey = "music_list_" + key + "pageNo_" + pageNo + pageSize;
+        String cacheKey = "musicList:" + key + "pageNo:" + pageNo + "pageSize:" + pageSize;
         ReturnMessage returnMessage = (ReturnMessage) cache.getObject(cacheKey, ReturnMessage.class);
         if (returnMessage != null && returnMessage.getReqId() != null) {
             return returnMessage;
@@ -52,7 +52,7 @@ public class Searcher {
                 okHttp3Request.index();
             }
 
-            if (returnMessage!=null&&returnMessage.getReqId() != null) {
+            if (returnMessage != null && returnMessage.getReqId() != null) {
                 cache.set(cacheKey, str, Duration.ofDays(1));
             } else {
                 okHttp3Request.index();

@@ -27,10 +27,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
 
+/**
+ * @author huanxi
+ */
 @RestController
 @Log4j2
 @RequestMapping("music")
-public class Music {
+public class MusicController {
 
     @Resource
     private ThreadPoolTaskExecutor executor;
@@ -45,7 +48,14 @@ public class Music {
     @Resource
     private KuwoService kuwoService;
 
-
+    /**
+     * 获取歌曲列表
+     *
+     * @param key
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
     @GetMapping("list")
     public ReturnMessage musicList(String key, int pageNo, int pageSize) {
         return searcher.search(key, pageNo, pageSize);
@@ -69,13 +79,6 @@ public class Music {
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
         //获取onedrive
-        /*String downloadUrl = oneDriveService.getDownLoadLink("/" + musicInfo.getArtist() + "/" + musicInfo.getName() + ".mp3");
-        if (!StringUtils.isEmpty(downloadUrl)) {
-            log.info("使用onedrive连接:" + musicInfo.getName());
-            return OutputUtils.success(downloadUrl);
-        }
-        //下载记录
-        log.info("下载记录:" + musicInfo.getArtist() + "name:" + musicInfo.getName());*/
 
         String filename = musicPiP.download(musicInfo);
         File file = new File(filename);
@@ -88,13 +91,23 @@ public class Music {
         return OutputUtils.error();
     }
 
+    /**
+     * 本地下载文件
+     *
+     * @param request
+     * @param artist
+     * @param name
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     @GetMapping("download")
     public ResponseEntity<byte[]> download(HttpServletRequest request, String artist, String name) throws UnsupportedEncodingException {
         //artist 处理
         String text = request.getQueryString();
         artist = getSubString(text, "artist=", "&name");
-        artist=URLDecoder.decode(artist, "UTF-8");
+        artist = URLDecoder.decode(artist, "UTF-8");
         String filename = musicPiP.getFile(artist, name);
+        log.info("开始下载文件:" + filename);
         InputStream in = null;
         byte[] body = null;
         ResponseEntity<byte[]> response = null;
@@ -134,7 +147,7 @@ public class Music {
      * @param right 后面文本
      * @return 返回 String
      */
-    public static String getSubString(String text, String left, String right) {
+    private static String getSubString(String text, String left, String right) {
         String result = "";
         int zLen;
         if (left == null || left.isEmpty()) {
@@ -163,12 +176,7 @@ public class Music {
                 for (MusicInfo musicInfo : res.getData().getList()) {
                     //数据持久化 //
                     try {
-                        executor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                musicPiP.save(musicInfo);
-                            }
-                        });
+                        executor.execute(() -> musicPiP.download(musicInfo));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

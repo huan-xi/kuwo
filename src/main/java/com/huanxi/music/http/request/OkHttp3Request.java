@@ -25,7 +25,7 @@ public class OkHttp3Request {
     }
 
     public Response get(String url, boolean retry) {
-        log.info("get:" + url);
+//        log.info("get:" + url);
         String kwToken = cache.get("kwToken");
         if (kwToken == null) {
             kwToken = "";

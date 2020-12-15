@@ -42,12 +42,14 @@ public class MusicPiP {
             path.mkdirs();
         }
         if (new File(fileName).isFile()) {
+            log.info("使用缓存文件:" + fileName);
             return fileName;
         }
         //获取input
         try {
             GetLinkVo getLinkVo = kuwoService.getDownloadLink(musicInfo.getRid());
             if (getLinkVo == null) {
+                log.error("获取下载链接失败:" + musicInfo.getRid());
                 return fileName;
             }
             String folder = System.getProperty("java.io.tmpdir");
@@ -65,14 +67,15 @@ public class MusicPiP {
             //下载图片
             mp3File.setId3v2Tag(v2);
             mp3File.save(fileName);
+            //删除临时文件
             new File(tmpMp3).delete();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("下载文件失败:", e);
         }
         return fileName;
     }
 
-    public String save(MusicInfo musicInfo) {
+    /*public String save(MusicInfo musicInfo) {
         String key = "finish_1_" + musicInfo.getName();
         String key2 = "music_finish" + "a" + musicInfo.getArtist() + "n" + musicInfo.getName();
         File path = new File(downloadPath + File.separator + musicInfo.getArtist());
@@ -116,5 +119,5 @@ public class MusicPiP {
             e.printStackTrace();
         }
         return fileName;
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime
       - /etc/timezone:/etc/timezone
-      - /mnt/log:/mnt/log
+      - /mnt/music/log:/var/log
       - /home/data:/data
     command: [
         'java',
