@@ -69,7 +69,6 @@ public class MusicPiP {
             mp3File.save(fileName);
             //删除临时文件
             new File(tmpMp3).delete();
-            log.info("从酷我下载文件成功:" + fileName);
         } catch (Exception e) {
             log.error("下载文件失败:", e);
         }

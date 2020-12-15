@@ -107,7 +107,7 @@ public class MusicController {
         artist = getSubString(text, "artist=", "&name");
         artist = URLDecoder.decode(artist, "UTF-8");
         String filename = musicPiP.getFile(artist, name);
-        log.info("开始下载文件:" + filename);
+        log.info("用户下载文件:" + filename);
         InputStream in = null;
         byte[] body = null;
         ResponseEntity<byte[]> response = null;

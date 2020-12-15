@@ -16,7 +16,6 @@ import java.net.URL;
 public class SingleThreadDownloader implements IDownloader {
 
 
-
     @Override
     public void downLoad(String url, String fileName, int retry) {
         downLoad(url, fileName);
@@ -41,7 +40,7 @@ public class SingleThreadDownloader implements IDownloader {
             if (code == 200) {
                 int length = conn.getContentLength();
                 int fileSize = length / 1024 / 1024;
-                log.info("开始下载文件:url" + fileUrl + "文件大小:" + fileSize + "M");
+                log.info("开始下载文件:filename:" + filename + "文件大小:" + fileSize + "M");
                 // 1、在客户端创建一个与服务端文件一样大小的文件
                 RandomAccessFile file = new RandomAccessFile(filename, "rw");
                 file.setLength(length);
@@ -60,6 +59,7 @@ public class SingleThreadDownloader implements IDownloader {
         }
     }
 
+    @Override
     public byte[] downLoadBytes(String fileUrl) {
         byte[] result = null;
         try {
@@ -73,7 +73,7 @@ public class SingleThreadDownloader implements IDownloader {
                 result = toByteArray(conn.getInputStream());
             }
         } catch (Exception e) {
-
+            log.info("下载url失败:", e);
         }
         return result;
     }
