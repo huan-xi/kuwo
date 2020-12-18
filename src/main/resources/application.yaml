@@ -4,9 +4,6 @@ cache:
 app:
   gateway: http://www.kuwo.cn
   path: /data/music
-logging:
-  file:
-    path: ~/tmp/log
 spring:
   profiles:
     active: ${active:dev}

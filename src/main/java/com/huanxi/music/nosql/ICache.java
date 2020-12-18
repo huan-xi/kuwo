@@ -15,4 +15,6 @@ public interface ICache {
 
     void set(String key, String value, Duration duration);
     void delete(String key);
+
+    Boolean hasKey(String key);
 }

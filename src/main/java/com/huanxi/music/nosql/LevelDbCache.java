@@ -79,6 +79,11 @@ public class LevelDbCache implements ICache {
 
     }
 
+    @Override
+    public Boolean hasKey(String key) {
+        return null;
+    }
+
     public int incr(String key) {
         byte[] res = db.get(key.getBytes());
         int result = res == null ? 0 : bytes2Int(res);

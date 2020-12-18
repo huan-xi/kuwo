@@ -1,5 +1,6 @@
 package com.huanxi.music.controller;
 
+import com.huanxi.music.common.IpUtils;
 import com.huanxi.music.common.message.AbstractMessage;
 import com.huanxi.music.common.message.OutputUtils;
 import com.huanxi.music.config.NetUtils;
@@ -12,6 +13,7 @@ import com.huanxi.music.music.kuwo.vo.SearchKeyVo;
 import com.huanxi.music.nosql.ICache;
 import com.huanxi.music.onedrive.OneDriveService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
+import java.time.Duration;
 
 /**
  * @author huanxi
@@ -84,6 +87,10 @@ public class MusicController {
      */
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
+        String cacheKey = getCacheKey(musicInfo.getArtist(), musicInfo.getName());
+        if (cache.hasKey(cacheKey)) {
+            return OutputUtils.error(musicInfo.getArtist() + ":" + musicInfo.getName() + "下载过频繁");
+        }
         //获取onedrive
         String filename = musicPiP.download(musicInfo);
         File file = new File(filename);
@@ -111,6 +118,7 @@ public class MusicController {
         String text = request.getQueryString();
         artist = getSubString(text, "artist=", "&name");
         artist = URLDecoder.decode(artist, "UTF-8");
+        String key = getCacheKey(artist, name);
         String filename = musicPiP.getFile(artist, name);
         log.info("用户下载文件:" + filename);
         InputStream in = null;
@@ -132,16 +140,14 @@ public class MusicController {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeQuietly(in);
         }
-
+        cache.set(key, "1", Duration.ofSeconds(60));
         return response;
+    }
+
+    private String getCacheKey(String artist, String name) {
+        return "cache:ip:" + IpUtils.getIP() + "artist:" + artist + "name:" + name;
     }
 
     /**

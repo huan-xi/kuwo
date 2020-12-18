@@ -1,3 +1,6 @@
 logging:
   file:
     path: ~/tmp/log
+app:
+  gateway: http://www.kuwo.cn
+  path: /Users/huanxi/tmp/data/music
