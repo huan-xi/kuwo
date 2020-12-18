@@ -76,10 +76,15 @@ public class MusicController {
         return kuwoService.getSearchKey(key);
     }
 
+    /**
+     * 先保存后下载
+     *
+     * @param musicInfo
+     * @return
+     */
     @PostMapping("save")
     public AbstractMessage download(MusicInfo musicInfo) {
         //获取onedrive
-
         String filename = musicPiP.download(musicInfo);
         File file = new File(filename);
         if (file.isFile()) {
