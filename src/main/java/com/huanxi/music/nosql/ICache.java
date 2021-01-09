@@ -5,7 +5,7 @@ import java.time.Duration;
 public interface ICache {
     String get(String key);
 
-    Object getObject(String key, Class clazz);
+     <T> T  getObject(String key, Class<T> clazz) ;
 
     void set(String key, String value);
 

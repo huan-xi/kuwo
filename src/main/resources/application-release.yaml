@@ -1,3 +1,6 @@
 logging:
   file:
     path: /var/log
+cache:
+  leveldb:
+    path: /data/db

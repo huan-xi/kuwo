@@ -7,9 +7,6 @@ services:
       dockerfile: Dockerfile
     environment:
       active: release
-      datasourceUrl: jdbc:mysql://172.18.0.1:3306/seller_assistant?characterEncoding=utf8&serverTimezone=GMT%2B8
-      redisHost: local.tb.xqcrm.com
-    #      redisPasswd: ""
     volumes:
       - /etc/localtime:/etc/localtime
       - /etc/timezone:/etc/timezone

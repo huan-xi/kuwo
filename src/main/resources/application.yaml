@@ -1,15 +1,8 @@
-cache:
-  leveldb:
-    path: /data/db
 app:
   gateway: http://www.kuwo.cn
   path: /data/music
 spring:
   profiles:
     active: ${active:dev}
-  redis:
-    port: 6379
-    host: ${redisHost:local.tb.xqcrm.com}
-#    password: ${redisPasswd:test_redis_pa}
 server:
   port: 8008
